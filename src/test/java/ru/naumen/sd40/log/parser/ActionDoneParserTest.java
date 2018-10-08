@@ -111,4 +111,15 @@ public class ActionDoneParserTest {
         Assert.assertEquals(5, parser.getDtObjectActions());
     }
 
+    @Test
+    public void mustParseCatalogsActions() {
+        //given
+        ActionDoneParser parser = new ActionDoneParser();
+
+        //when
+        parser.parseLine("Done(10): GetCatalogsAction");
+
+        //then
+        Assert.assertEquals(1, parser.getGetCatalogsActions());
+    }
 }
