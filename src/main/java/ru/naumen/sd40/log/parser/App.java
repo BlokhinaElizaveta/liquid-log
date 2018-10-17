@@ -48,20 +48,24 @@ public class App {
 
         TimeParser timeParser;
         DataParser dataParser;
+        LogLineParser logLineParser;
 
         String mode = System.getProperty("parse.mode", "");
         switch (mode) {
             case "sdng":
                 timeParser = new SdngTimeParser();
                 dataParser = new SdgnDataParser();
+                logLineParser = new OneLineParser(timeParser, dataParser, data);
                 break;
             case "gc":
                 timeParser = new GCTimeParser();
                 dataParser = new GCDataParser();
+                logLineParser = new OneLineParser(timeParser, dataParser, data);
                 break;
             case "top":
                 timeParser = new TopTimeParser(log);
                 dataParser = new TopDataParser();
+                logLineParser = new BlockOfLinesParser(timeParser, dataParser, data);
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -75,16 +79,7 @@ public class App {
         try (BufferedReader br = new BufferedReader(new FileReader(log))) {
             String line;
             while ((line = br.readLine()) != null) {
-                long time = timeParser.parseLine(line);
-
-                if (time == 0) {
-                    continue;
-                }
-
-                int min5 = 5 * 60 * 1000;
-                long count = time / min5;
-                long key = count * min5;
-                dataParser.parseLine(line, data.computeIfAbsent(key, k -> new DataSet()));
+                logLineParser.parseTimeAndData(line);
             }
         }
 
