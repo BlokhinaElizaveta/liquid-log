@@ -24,7 +24,7 @@ public class BlockOfLinesParser implements LogLineParser {
         if (time == 0)
             dataParser.parseLine(line, currentSet);
         else
-            currentSet = existingDataSet.computeIfAbsent(NumberUtils.prepareTime(time), k -> new DataSet());
+            currentSet = existingDataSet.computeIfAbsent(NumberUtils.getTimeInterval(time), k -> new DataSet());
 
     }
 }

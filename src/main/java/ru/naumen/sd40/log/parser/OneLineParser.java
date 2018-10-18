@@ -20,6 +20,6 @@ public class OneLineParser implements LogLineParser {
         if (time == 0)
             return;
 
-        dataParser.parseLine(line, existingDataSet.computeIfAbsent(NumberUtils.prepareTime(time), k -> new DataSet()));
+        dataParser.parseLine(line, existingDataSet.computeIfAbsent(NumberUtils.getTimeInterval(time), k -> new DataSet()));
     }
 }

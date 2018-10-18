@@ -15,7 +15,7 @@ public class NumberUtils
         return Double.isNaN(value) ? 0.0d : value;
     }
 
-    public static long prepareTime (long time) {
+    public static long getTimeInterval(long time) {
         int min5 = 5 * 60 * 1000;
         long count = time / min5;
         return count * min5;
