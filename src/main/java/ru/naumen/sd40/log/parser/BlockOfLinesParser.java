@@ -1,30 +1,32 @@
 package ru.naumen.sd40.log.parser;
 
 import java.text.ParseException;
-import java.util.HashMap;
 
 public class BlockOfLinesParser implements LogLineParser {
 
     private TimeParser timeParser;
     private DataParser dataParser;
+    private IDataSetService dataSetService;
 
-    private HashMap<Long, DataSet> existingDataSet;
-    private DataSet currentSet;
+    private DataSet currentSet = new DataSet();
 
-    public BlockOfLinesParser(TimeParser timeParser, DataParser dataParser, HashMap<Long, DataSet> existingDataSet) {
+    public BlockOfLinesParser(TimeParser timeParser, DataParser dataParser, IDataSetService dataSetService) {
         this.timeParser = timeParser;
         this.dataParser = dataParser;
-        this.existingDataSet = existingDataSet;
+        this.dataSetService = dataSetService;
     }
 
     @Override
-    public void parseTimeAndData(String line) throws ParseException {
+    public void parse(String line) throws ParseException {
         long time = timeParser.parseLine(line);
 
         if (time == 0)
             dataParser.parseLine(line, currentSet);
-        else
-            currentSet = existingDataSet.computeIfAbsent(NumberUtils.getTimeInterval(time), k -> new DataSet());
+        else {
+            long key = NumberUtils.getTimeInterval(time);
+
+            currentSet = dataSetService.get(key);
+        }
 
     }
 }
