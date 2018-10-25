@@ -34,7 +34,8 @@ public class LogParser {
 
         TimeParser timeParser;
         LogLineParser logLineParser;
-        IDataSetService dataSetService = new DataSetService(influxDb, storage);
+        DBWriter writer = new InfluxDBWriter(influxDb, storage);
+        IDataSetService dataSetService = new DataSetService(writer);
 
         String mode = System.getProperty("parse.mode", "");
 
@@ -66,5 +67,7 @@ public class LogParser {
                 logLineParser.parse(line);
             }
         }
+
+        dataSetService.close();
     }
 }
