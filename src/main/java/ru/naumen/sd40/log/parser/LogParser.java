@@ -12,44 +12,33 @@ import java.text.ParseException;
  */
 public class LogParser {
     /**
-     * @param args [0] - sdng.log, [1] - gc.log, [2] - top, [3] - dbName, [4] timezone
      * @throws IOException
      * @throws ParseException
      */
-    public static void main(String[] args) throws IOException, ParseException {
-        String influxDb = null;
-
-        if (args.length > 1) {
-            influxDb = args[1];
-            influxDb = influxDb.replaceAll("-", "_");
-        }
+    public static void parse(String path, String mode, String db, String timeZone, boolean trace) throws IOException, ParseException {
+        String influxDb = db.replaceAll("-", "_");
 
         InfluxDAO storage = null;
-        if (influxDb != null) {
-            storage = new InfluxDAO(System.getProperty("influx.host"), System.getProperty("influx.user"),
-                    System.getProperty("influx.password"));
-        }
-
-        String log = args[0];
+        storage = new InfluxDAO(System.getProperty("influx.host"), System.getProperty("influx.user"),
+                System.getProperty("influx.password"));
 
         TimeParser timeParser;
         LogLineParser logLineParser;
-        DBWriter writer = new InfluxDBWriter(influxDb, storage);
+        DBWriter writer = new InfluxDBWriter(influxDb, storage, trace);
         IDataSetService dataSetService = new DataSetService(writer);
 
-        String mode = System.getProperty("parse.mode", "");
 
         switch (mode) {
             case "sdng":
                 timeParser = new SdngTimeParser();
-                logLineParser = new OneLineParser(timeParser, new SdgnDataParser(), dataSetService);
+                logLineParser = new OneLineParser(timeParser, new SdngDataParser(), dataSetService);
                 break;
             case "gc":
                 timeParser = new GCTimeParser();
                 logLineParser = new OneLineParser(timeParser, new GCDataParser(), dataSetService);
                 break;
             case "top":
-                timeParser = new TopTimeParser(log);
+                timeParser = new TopTimeParser(path);
                 logLineParser = new BlockOfLinesParser(timeParser, new TopDataParser(), dataSetService);
                 break;
             default:
@@ -57,11 +46,9 @@ public class LogParser {
                         "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + mode);
         }
 
-        if (args.length > 2) {
-            timeParser.configureTimeZone(args[2]);
-        }
+        timeParser.configureTimeZone(timeZone);
 
-        try (BufferedReader br = new BufferedReader(new FileReader(log))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line;
             while ((line = br.readLine()) != null) {
                 logLineParser.parse(line);

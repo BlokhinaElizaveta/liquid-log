@@ -8,10 +8,12 @@ public class InfluxDBWriter implements DBWriter {
     private BatchPoints points;
     private InfluxDAO storage;
     private String InfluxDb;
+    private boolean trace;
 
-    public InfluxDBWriter(String influxDb, InfluxDAO storage){
+    public InfluxDBWriter(String influxDb, InfluxDAO storage, boolean trace){
         this.storage = storage;
         InfluxDb = influxDb;
+        this.trace = trace;
 
         if (influxDb != null) {
             storage.init();
@@ -29,7 +31,7 @@ public class InfluxDBWriter implements DBWriter {
         ActionDoneParser dones = dataSet.getActionsDone();
         dones.calculate();
         ErrorParser erros = dataSet.getErrors();
-        if (System.getProperty("NoCsv") == null) {
+        if (trace) {
             System.out.print(String.format("%d;%d;%f;%f;%f;%f;%f;%f;%f;%f;%d\n", key, dones.getCount(),
                     dones.getMin(), dones.getMean(), dones.getStddev(), dones.getPercent50(), dones.getPercent95(),
                     dones.getPercent99(), dones.getPercent999(), dones.getMax(), erros.getErrorCount()));

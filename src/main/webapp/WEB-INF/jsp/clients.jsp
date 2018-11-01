@@ -42,6 +42,25 @@
     </script>
 <div class="container">
 	<br>
+    <form class="setting-form" action="/parse" method="post">
+        <label>Database name <input name="db" type="text" required></label>
+        <label>Parsing mode
+            <select name="mode">
+                <option value="sdng">sdng</option>
+                <option value="gc">gc</option>
+                <option value="top">top</option>
+            </select>
+        </label>
+        <label>Path to log file <input name="path" type="text" required></label>
+        <label>Time zone <input name="timezone" type="text" value = "GMT" required></label>
+        <label>With trace
+            <select name="trace">
+                <option value="true">yes</option>
+                <option value="">no</option>
+            </select>
+        </label>
+        <button type="submit">Parse log</button>
+    </form>
 	<div class="alert alert-info">
   		<h3><strong>Attention!</strong><br>All requests for stored data are made with UTC time.<br>Requested data will be displayed in your browsers timezone.</h3>
 	</div>
