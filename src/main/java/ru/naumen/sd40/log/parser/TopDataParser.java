@@ -14,7 +14,7 @@ public class TopDataParser implements DataParser {
         Matcher la = Pattern.compile(".*load average:(.*)").matcher(line);
         if (la.find())
         {
-            data.cpuData().addLa(Double.parseDouble(la.group(1).split(",")[0].trim()));
+            data.topData().addLa(Double.parseDouble(la.group(1).split(",")[0].trim()));
             return;
         }
 
@@ -22,8 +22,8 @@ public class TopDataParser implements DataParser {
         Matcher cpuAndMemMatcher = cpuAndMemPattren.matcher(line);
         if (cpuAndMemMatcher.find())
         {
-            data.cpuData().addCpu(Double.valueOf(cpuAndMemMatcher.group(1)));
-            data.cpuData().addMem(Double.valueOf(cpuAndMemMatcher.group(2)));
+            data.topData().addCpu(Double.valueOf(cpuAndMemMatcher.group(1)));
+            data.topData().addMem(Double.valueOf(cpuAndMemMatcher.group(2)));
             return;
         }
     }

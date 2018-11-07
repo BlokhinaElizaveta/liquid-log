@@ -39,10 +39,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import ru.naumen.perfhouse.statdata.Constants;
-import ru.naumen.sd40.log.parser.ActionDoneParser;
-import ru.naumen.sd40.log.parser.ErrorParser;
-import ru.naumen.sd40.log.parser.GCParser;
-import ru.naumen.sd40.log.parser.TopData;
+import ru.naumen.sd40.log.parser.*;
 
 /**
  * Created by doki on 24.10.16.
@@ -107,8 +104,8 @@ public class InfluxDAO
         return BatchPoints.database(dbName).build();
     }
 
-    public void storeActionsFromLog(BatchPoints batch, String dbName, long date, ActionDoneParser dones,
-            ErrorParser errors)
+    public void storeActionsFromLog(BatchPoints batch, String dbName, long date, ActionDoneData dones,
+            ErrorData errors)
     {
         //@formatter:off
         Builder builder = Point.measurement(Constants.MEASUREMENT_NAME).time(date, TimeUnit.MILLISECONDS)
@@ -124,7 +121,7 @@ public class InfluxDAO
                 .addField(ERRORS, errors.getErrorCount())
                 .addField(ADD_ACTIONS, dones.getAddObjectActions())
                 .addField(EDIT_ACTIONS, dones.getEditObjectsActions())
-                .addField(LIST_ACTIONS, dones.geListActions())
+                .addField(LIST_ACTIONS, dones.getListActions())
                 .addField(COMMENT_ACTIONS, dones.getCommentActions())
                 .addField(GET_FORM_ACTIONS, dones.getFormActions())
                 .addField(GET_DT_OBJECT_ACTIONS, dones.getDtObjectActions())
@@ -176,7 +173,7 @@ public class InfluxDAO
         }
     }
 
-    public void storeGc(BatchPoints batch, String dbName, long date, GCParser gc)
+    public void storeGc(BatchPoints batch, String dbName, long date, GCData gc)
     {
         Point point = Point.measurement(Constants.MEASUREMENT_NAME).time(date, TimeUnit.MILLISECONDS)
                 .addField(GCTIMES, gc.getGcTimes()).addField(AVARAGE_GC_TIME, gc.getCalculatedAvg())

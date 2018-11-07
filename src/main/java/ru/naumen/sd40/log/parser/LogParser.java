@@ -1,5 +1,7 @@
 package ru.naumen.sd40.log.parser;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ru.naumen.perfhouse.influx.InfluxDAO;
 
 import java.io.BufferedReader;
@@ -10,17 +12,22 @@ import java.text.ParseException;
 /**
  * Created by doki on 22.10.16.
  */
+
+@Component("logParser")
 public class LogParser {
+    private InfluxDAO storage;
+
+    @Autowired
+    public LogParser(InfluxDAO storage) {
+        this.storage = storage;
+    }
+
     /**
      * @throws IOException
      * @throws ParseException
      */
-    public static void parse(String path, String mode, String db, String timeZone, boolean trace) throws IOException, ParseException {
+    public void parse(String path, String mode, String db, String timeZone, boolean trace) throws IOException, ParseException {
         String influxDb = db.replaceAll("-", "_");
-
-        InfluxDAO storage = null;
-        storage = new InfluxDAO(System.getProperty("influx.host"), System.getProperty("influx.user"),
-                System.getProperty("influx.password"));
 
         TimeParser timeParser;
         LogLineParser logLineParser;
@@ -31,7 +38,7 @@ public class LogParser {
         switch (mode) {
             case "sdng":
                 timeParser = new SdngTimeParser();
-                logLineParser = new OneLineParser(timeParser, new SdngDataParser(), dataSetService);
+                logLineParser = new OneLineParser(timeParser, new SdngDataParser(new ErrorParser(), new ActionDoneParser()), dataSetService);
                 break;
             case "gc":
                 timeParser = new GCTimeParser();
