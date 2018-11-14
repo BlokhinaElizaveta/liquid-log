@@ -1,8 +1,11 @@
 package ru.naumen.sd40.log.parser;
 
+import org.springframework.stereotype.Component;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component("GCDataParser")
 public class GCDataParser implements DataParser
 {
     private Pattern gcExecutionTime = Pattern.compile(".*real=(.*)secs.*");

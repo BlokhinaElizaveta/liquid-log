@@ -9,16 +9,16 @@ import java.util.regex.Pattern;
 public class ActionDoneData {
 
     ArrayList<Integer> times = new ArrayList<>();
-    double min;
-    double mean;
-    double stddev;
-    double percent50;
-    double percent95;
-    double percent99;
+    private double min;
+    private double mean;
+    private double stddev;
+    private double percent50;
+    private double percent95;
+    private double percent99;
 
-    double percent999;
-    double max;
-    long count;
+    private double percent999;
+    private double max;
+    private long count;
     private int addObjectActions = 0;
     private int editObjectsActions = 0;
     private int getListActions = 0;

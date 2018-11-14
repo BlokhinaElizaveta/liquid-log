@@ -1,5 +1,6 @@
 package ru.naumen.sd40.log.parser;
 
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.naumen.perfhouse.influx.InfluxDAO;
@@ -16,6 +17,9 @@ import java.text.ParseException;
 @Component("logParser")
 public class LogParser {
     private InfluxDAO storage;
+
+    @Autowired
+    private BeanFactory beanFactory;
 
     @Autowired
     public LogParser(InfluxDAO storage) {
@@ -38,15 +42,15 @@ public class LogParser {
         switch (mode) {
             case "sdng":
                 timeParser = new SdngTimeParser();
-                logLineParser = new OneLineParser(timeParser, new SdngDataParser(new ErrorParser(), new ActionDoneParser()), dataSetService);
+                logLineParser = new OneLineParser(timeParser, beanFactory.getBean("SdngDataParser", DataParser.class), dataSetService);
                 break;
             case "gc":
                 timeParser = new GCTimeParser();
-                logLineParser = new OneLineParser(timeParser, new GCDataParser(), dataSetService);
+                logLineParser = new OneLineParser(timeParser, beanFactory.getBean("GCDataParser", DataParser.class), dataSetService);
                 break;
             case "top":
                 timeParser = new TopTimeParser(path);
-                logLineParser = new BlockOfLinesParser(timeParser, new TopDataParser(), dataSetService);
+                logLineParser = new BlockOfLinesParser(timeParser, beanFactory.getBean("TopDataParser", DataParser.class), dataSetService);
                 break;
             default:
                 throw new IllegalArgumentException(

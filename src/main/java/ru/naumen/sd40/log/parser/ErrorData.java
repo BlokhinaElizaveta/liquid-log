@@ -1,9 +1,9 @@
 package ru.naumen.sd40.log.parser;
 
 public class ErrorData {
-    long warnCount;
-    long errorCount;
-    long fatalCount;
+    private long warnCount;
+    private long errorCount;
+    private long fatalCount;
 
     public long getWarnCount()
     {
