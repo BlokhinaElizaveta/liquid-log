@@ -2,6 +2,7 @@ package ru.naumen.sd40.log.parser;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.naumen.perfhouse.influx.InfluxDAO;
 
@@ -18,8 +19,17 @@ import java.text.ParseException;
 public class LogParser {
     private InfluxDAO storage;
 
+    @Qualifier("SdngDataParser")
     @Autowired
-    private BeanFactory beanFactory;
+    private DataParser sdngDataParser;
+
+    @Qualifier("GCDataParser")
+    @Autowired
+    private DataParser gcDataParser;
+
+    @Qualifier("TopDataParser")
+    @Autowired
+    private DataParser topDataParser;
 
     @Autowired
     public LogParser(InfluxDAO storage) {
@@ -42,15 +52,15 @@ public class LogParser {
         switch (mode) {
             case "sdng":
                 timeParser = new SdngTimeParser();
-                logLineParser = new OneLineParser(timeParser, beanFactory.getBean("SdngDataParser", DataParser.class), dataSetService);
+                logLineParser = new OneLineParser(timeParser, sdngDataParser, dataSetService);
                 break;
             case "gc":
                 timeParser = new GCTimeParser();
-                logLineParser = new OneLineParser(timeParser, beanFactory.getBean("GCDataParser", DataParser.class), dataSetService);
+                logLineParser = new OneLineParser(timeParser, gcDataParser, dataSetService);
                 break;
             case "top":
                 timeParser = new TopTimeParser(path);
-                logLineParser = new BlockOfLinesParser(timeParser, beanFactory.getBean("TopDataParser", DataParser.class), dataSetService);
+                logLineParser = new BlockOfLinesParser(timeParser, topDataParser, dataSetService);
                 break;
             default:
                 throw new IllegalArgumentException(
