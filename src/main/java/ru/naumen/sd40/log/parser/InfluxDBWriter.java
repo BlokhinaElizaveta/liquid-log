@@ -28,9 +28,9 @@ public class InfluxDBWriter implements DBWriter {
 
     @Override
     public void write(long key, DataSet dataSet) {
-        ActionDoneParser dones = dataSet.getActionsDone();
+        ActionDoneData dones = dataSet.getActionsDone();
         dones.calculate();
-        ErrorParser erros = dataSet.getErrors();
+        ErrorData erros = dataSet.getError();
         if (trace) {
             System.out.print(String.format("%d;%d;%f;%f;%f;%f;%f;%f;%f;%f;%d\n", key, dones.getCount(),
                     dones.getMin(), dones.getMean(), dones.getStddev(), dones.getPercent50(), dones.getPercent95(),
@@ -40,12 +40,12 @@ public class InfluxDBWriter implements DBWriter {
             storage.storeActionsFromLog(points, InfluxDb, key, dones, erros);
         }
 
-        GCParser gc = dataSet.getGc();
+        GCData gc = dataSet.getGcData();
         if (!gc.isNan()) {
             storage.storeGc(points, InfluxDb, key, gc);
         }
 
-        TopData cpuData = dataSet.cpuData();
+        TopData cpuData = dataSet.topData();
         if (!cpuData.isNan()) {
             storage.storeTop(points, InfluxDb, key, cpuData);
         }

@@ -5,46 +5,28 @@ package ru.naumen.sd40.log.parser;
  */
 public class DataSet
 {
-    private ActionDoneParser actionsDone;
-    private ErrorParser errors;
-    private GCParser gc;
-    private TopData cpuData = new TopData();
+    private TopData topData = new TopData();
+    private ActionDoneData actionDoneData = new ActionDoneData();
+    private ErrorData errorData = new ErrorData();
+    private GCData gcData = new GCData();
 
-    public DataSet()
+
+    public ActionDoneData getActionsDone()
     {
-        actionsDone = new ActionDoneParser();
-        errors = new ErrorParser();
-        gc = new GCParser();
+        return actionDoneData;
     }
 
-    public void parseSdgnLine(String line)
+    public ErrorData getError()
     {
-        errors.parseLine(line);
-        actionsDone.parseLine(line);
+        return errorData;
     }
 
-    public void parseGcLine(String line)
-    {
-        gc.parseLine(line);
+    public GCData getGcData() {
+        return gcData;
     }
 
-    public ActionDoneParser getActionsDone()
+    public TopData topData()
     {
-        return actionsDone;
-    }
-
-    public ErrorParser getErrors()
-    {
-        return errors;
-    }
-
-    public GCParser getGc()
-    {
-        return gc;
-    }
-
-    public TopData cpuData()
-    {
-        return cpuData;
+        return topData;
     }
 }

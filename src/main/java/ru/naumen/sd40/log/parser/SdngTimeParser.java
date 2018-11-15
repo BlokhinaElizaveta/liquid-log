@@ -1,5 +1,7 @@
 package ru.naumen.sd40.log.parser;
 
+import org.springframework.stereotype.Component;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,6 +13,7 @@ import java.util.regex.Pattern;
 /**
  * Created by doki on 22.10.16.
  */
+
 public class SdngTimeParser implements TimeParser
 {
     private static final Pattern TIME_PATTERN = Pattern
