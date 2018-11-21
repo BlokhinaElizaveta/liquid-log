@@ -26,8 +26,7 @@ public class InfluxDBWriter implements DBWriter {
 
     }
 
-    @Override
-    public void write(long key, DataSet dataSet) {
+    public void write(long key, SdngDataSet dataSet) {
         ActionDoneData dones = dataSet.getActionsDone();
         dones.calculate();
         ErrorData erros = dataSet.getError();
@@ -39,15 +38,29 @@ public class InfluxDBWriter implements DBWriter {
         if (!dones.isNan()) {
             storage.storeActionsFromLog(points, InfluxDb, key, dones, erros);
         }
+    }
 
+    public void write(long key, GCDataSet dataSet) {
         GCData gc = dataSet.getGcData();
         if (!gc.isNan()) {
             storage.storeGc(points, InfluxDb, key, gc);
         }
+    }
 
+    public void write(long key, TopDataSet dataSet) {
         TopData cpuData = dataSet.topData();
         if (!cpuData.isNan()) {
             storage.storeTop(points, InfluxDb, key, cpuData);
         }
+    }
+
+    @Override
+    public void write(long key, DataSet dataSet) {
+        if(dataSet instanceof TopDataSet)
+            write(key, (TopDataSet) dataSet);
+        if(dataSet instanceof SdngDataSet)
+            write(key, (SdngDataSet) dataSet);
+        if(dataSet instanceof GCDataSet)
+            write(key, (GCDataSet) dataSet);
     }
 }

@@ -10,16 +10,18 @@ import static org.mockito.Mockito.verify;
 public class DataSetServiceTests {
 
     private DBWriter writer;
+    private DataSetFactory factory;
 
     @Before
     public void Setup(){
         writer = mock(InfluxDBWriter.class);
+        factory = new SdngDataSetFactory();
     }
 
     @Test
     public void mustReturnOldDataSetWhenOldKey() {
         //given
-        IDataSetService dataSetService = new DataSetService(writer);
+        IDataSetService dataSetService = new DataSetService(writer, factory);
         long key = 5;
         DataSet expectedDataSet = dataSetService.get(key);
 
@@ -33,7 +35,7 @@ public class DataSetServiceTests {
     @Test
     public void mustReturnNewDataSetWhenNewKey() {
         //given
-        IDataSetService dataSetService = new DataSetService(writer);
+        IDataSetService dataSetService = new DataSetService(writer, factory);
         long key = 5;
         DataSet oldDataSet = dataSetService.get(key);
 
@@ -48,7 +50,7 @@ public class DataSetServiceTests {
     @Test
     public void mustWriteToDBWhenDifferentKeys() {
         //given
-        IDataSetService dataSetService = new DataSetService(writer);
+        IDataSetService dataSetService = new DataSetService(writer, factory);
 
         //when
         DataSet oldDataSet = dataSetService.get(5);
@@ -63,7 +65,7 @@ public class DataSetServiceTests {
     @Test
     public void mustWriteToDBWhenEqualsKeys() {
         //given
-        IDataSetService dataSetService = new DataSetService(writer);
+        IDataSetService dataSetService = new DataSetService(writer, factory);
 
         //when
         DataSet oldDataSet = dataSetService.get(5);

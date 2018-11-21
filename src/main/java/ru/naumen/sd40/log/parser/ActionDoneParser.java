@@ -24,7 +24,7 @@ public class ActionDoneParser
     Pattern doneRegEx = Pattern.compile("Done\\((\\d+)\\): ?(.*?Action)");
 
 
-    public void parseLine(String line, DataSet data)
+    public void parseLine(String line, SdngDataSet data)
     {
         Matcher matcher = doneRegEx.matcher(line);
 

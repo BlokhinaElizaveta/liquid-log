@@ -6,11 +6,11 @@ import org.junit.Test;
 
 public class ActionDoneParserTest {
 
-    private DataSet dataSet;
+    private SdngDataSet dataSet;
     @Before
     public void SetUp()
     {
-        dataSet = new DataSet();
+        dataSet = new SdngDataSet();
     }
 
     @Test

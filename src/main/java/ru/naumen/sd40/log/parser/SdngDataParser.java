@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component("SdngDataParser")
-public class SdngDataParser implements DataParser {
+public class SdngDataParser implements DataParser<SdngDataSet> {
 
     private ErrorParser errorsParser;
     private ActionDoneParser actionsDoneParser;
@@ -17,7 +17,7 @@ public class SdngDataParser implements DataParser {
     }
 
     @Override
-    public void parseLine(String line, DataSet data) {
+    public void parseLine(String line, SdngDataSet data) {
         errorsParser.parseLine(line, data);
         actionsDoneParser.parseLine(line, data);
     }

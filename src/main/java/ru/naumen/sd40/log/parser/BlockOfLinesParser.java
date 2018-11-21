@@ -8,12 +8,15 @@ public class BlockOfLinesParser implements LogLineParser {
     private DataParser dataParser;
     private IDataSetService dataSetService;
 
-    private DataSet currentSet = new DataSet();
+    private DataSet currentSet;
 
-    public BlockOfLinesParser(TimeParser timeParser, DataParser dataParser, IDataSetService dataSetService) {
+    public BlockOfLinesParser(TimeParser timeParser, DataParser dataParser, IDataSetService dataSetService,
+                              DataSet startDataSet)
+    {
         this.timeParser = timeParser;
         this.dataParser = dataParser;
         this.dataSetService = dataSetService;
+        currentSet = startDataSet;
     }
 
     @Override
@@ -24,7 +27,6 @@ public class BlockOfLinesParser implements LogLineParser {
             dataParser.parseLine(line, currentSet);
         else {
             long key = NumberUtils.getTimeInterval(time);
-
             currentSet = dataSetService.get(key);
         }
 
