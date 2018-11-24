@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
  * Created by doki on 22.10.16.
  */
 
+@Component
 public class SdngTimeParser implements TimeParser
 {
     private static final Pattern TIME_PATTERN = Pattern
@@ -44,4 +45,7 @@ public class SdngTimeParser implements TimeParser
         }
         return 0L;
     }
+
+    @Override
+    public void prepareFileName(String fileName) throws IllegalArgumentException {}
 }
