@@ -6,12 +6,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component("GCDataParser")
-public class GCDataParser implements DataParser
+public class GCDataParser implements DataParser<GCDataSet>
 {
     private Pattern gcExecutionTime = Pattern.compile(".*real=(.*)secs.*");
 
     @Override
-    public void parseLine(String line, DataSet data)
+    public void parseLine(String line, GCDataSet data)
     {
         Matcher matcher = gcExecutionTime.matcher(line);
         if (matcher.find())

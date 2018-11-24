@@ -46,21 +46,24 @@ public class LogParser {
         TimeParser timeParser;
         LogLineParser logLineParser;
         DBWriter writer = new InfluxDBWriter(influxDb, storage, trace);
-        IDataSetService dataSetService = new DataSetService(writer);
-
+        IDataSetService dataSetService;
 
         switch (mode) {
             case "sdng":
                 timeParser = new SdngTimeParser();
-                logLineParser = new OneLineParser(timeParser, sdngDataParser, dataSetService);
+                dataSetService = new DataSetService(writer, new SdngDataSetFactory());
+                logLineParser = new OneLineParser(timeParser, sdngDataParser, dataSetService) ;
                 break;
             case "gc":
                 timeParser = new GCTimeParser();
+                dataSetService = new DataSetService(writer, new GCDataSetFactory());
                 logLineParser = new OneLineParser(timeParser, gcDataParser, dataSetService);
                 break;
             case "top":
                 timeParser = new TopTimeParser(path);
-                logLineParser = new BlockOfLinesParser(timeParser, topDataParser, dataSetService);
+                DataSetFactory factory =  new TopDataSetFactory();
+                dataSetService = new DataSetService(writer, factory);
+                logLineParser = new BlockOfLinesParser(timeParser, topDataParser, dataSetService, factory.create());
                 break;
             default:
                 throw new IllegalArgumentException(

@@ -6,13 +6,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component("TopDataParser")
-public class TopDataParser implements DataParser {
+public class TopDataParser implements DataParser<TopDataSet> {
 
     private Pattern cpuAndMemPattren = Pattern
             .compile("^ *\\d+ \\S+ +\\S+ +\\S+ +\\S+ +\\S+ +\\S+ +\\S+ \\S+ +(\\S+) +(\\S+) +\\S+ java");
 
     @Override
-    public void parseLine(String line, DataSet data) {
+    public void parseLine(String line, TopDataSet data) {
         //get la
         Matcher la = Pattern.compile(".*load average:(.*)").matcher(line);
         if (la.find())

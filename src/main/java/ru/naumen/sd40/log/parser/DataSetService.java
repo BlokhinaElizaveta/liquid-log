@@ -2,13 +2,14 @@ package ru.naumen.sd40.log.parser;
 
 public class DataSetService implements IDataSetService {
 
-
     private DBWriter writer;
+    private DataSetFactory factory;
     private DataSet currentDataSet;
     private long key;
 
-    public DataSetService(DBWriter writer) {
+    public DataSetService(DBWriter writer, DataSetFactory factory) {
         this.writer = writer;
+        this.factory = factory;
         if (System.getProperty("NoCsv") == null) {
             System.out.print("Timestamp;Actions;Min;Mean;Stddev;50%%;95%%;99%%;99.9%%;Max;Errors\n");
         }
@@ -22,9 +23,8 @@ public class DataSetService implements IDataSetService {
                 writer.write(this.key, currentDataSet);
 
             this.key = key;
-            currentDataSet = new DataSet();
+            currentDataSet = factory.create();
         }
-
         return currentDataSet;
     }
 
