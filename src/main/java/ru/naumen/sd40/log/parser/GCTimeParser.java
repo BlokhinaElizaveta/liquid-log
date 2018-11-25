@@ -36,4 +36,7 @@ public class GCTimeParser implements TimeParser
         }
         return 0L;
     }
+
+    @Override
+    public void prepareFileName(String fileName) throws IllegalArgumentException {}
 }

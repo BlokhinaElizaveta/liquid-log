@@ -1,7 +1,5 @@
 package ru.naumen.sd40.log.parser;
 
-import org.springframework.stereotype.Component;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,4 +42,7 @@ public class SdngTimeParser implements TimeParser
         }
         return 0L;
     }
+
+    @Override
+    public void prepareFileName(String fileName) throws IllegalArgumentException {}
 }

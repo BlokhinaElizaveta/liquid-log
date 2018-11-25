@@ -1,6 +1,5 @@
 package ru.naumen.sd40.log.parser;
 
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -32,6 +31,18 @@ public class LogParser {
     private DataParser topDataParser;
 
     @Autowired
+    @Qualifier("SdngTimeParserFactory")
+    private TimeParserFactory sdngTimeParserFactory;
+
+    @Autowired
+    @Qualifier("GCTimeParserFactory")
+    private TimeParserFactory gcTimeParserFactory;
+
+    @Autowired
+    @Qualifier("TopTimeParserFactory")
+    private TimeParserFactory topTimeParserFactory;
+
+    @Autowired
     public LogParser(InfluxDAO storage) {
         this.storage = storage;
     }
@@ -50,18 +61,18 @@ public class LogParser {
 
         switch (mode) {
             case "sdng":
-                timeParser = new SdngTimeParser();
+                timeParser = sdngTimeParserFactory.get();
                 dataSetService = new DataSetService(writer, new SdngDataSetFactory());
                 logLineParser = new OneLineParser(timeParser, sdngDataParser, dataSetService) ;
                 break;
             case "gc":
-                timeParser = new GCTimeParser();
+                timeParser = gcTimeParserFactory.get();
                 dataSetService = new DataSetService(writer, new GCDataSetFactory());
                 logLineParser = new OneLineParser(timeParser, gcDataParser, dataSetService);
                 break;
             case "top":
-                timeParser = new TopTimeParser(path);
-                DataSetFactory factory =  new TopDataSetFactory();
+                timeParser = topTimeParserFactory.get();
+                DataSetFactory factory = new TopDataSetFactory();
                 dataSetService = new DataSetService(writer, factory);
                 logLineParser = new BlockOfLinesParser(timeParser, topDataParser, dataSetService, factory.create());
                 break;
@@ -71,6 +82,7 @@ public class LogParser {
         }
 
         timeParser.configureTimeZone(timeZone);
+        timeParser.prepareFileName(path);
 
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line;
