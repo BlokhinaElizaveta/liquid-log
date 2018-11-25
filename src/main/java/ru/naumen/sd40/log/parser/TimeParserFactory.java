@@ -1,5 +1,5 @@
 package ru.naumen.sd40.log.parser;
 
 public interface TimeParserFactory {
-    TimeParser Get();
+    TimeParser get();
 }

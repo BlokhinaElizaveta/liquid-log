@@ -1,14 +1,11 @@
 package ru.naumen.sd40.log.parser;
 
-import org.springframework.stereotype.Component;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Component
 public class TopTimeParser implements TimeParser {
     private Pattern timeRegex = Pattern.compile("^_+ (\\S+)");
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm");

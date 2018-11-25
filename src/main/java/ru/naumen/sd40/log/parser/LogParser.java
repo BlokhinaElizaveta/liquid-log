@@ -61,17 +61,17 @@ public class LogParser {
 
         switch (mode) {
             case "sdng":
-                timeParser = sdngTimeParserFactory.Get();
+                timeParser = sdngTimeParserFactory.get();
                 dataSetService = new DataSetService(writer, new SdngDataSetFactory());
                 logLineParser = new OneLineParser(timeParser, sdngDataParser, dataSetService) ;
                 break;
             case "gc":
-                timeParser = gcTimeParserFactory.Get();
+                timeParser = gcTimeParserFactory.get();
                 dataSetService = new DataSetService(writer, new GCDataSetFactory());
                 logLineParser = new OneLineParser(timeParser, gcDataParser, dataSetService);
                 break;
             case "top":
-                timeParser = topTimeParserFactory.Get();
+                timeParser = topTimeParserFactory.get();
                 DataSetFactory factory = new TopDataSetFactory();
                 dataSetService = new DataSetService(writer, factory);
                 logLineParser = new BlockOfLinesParser(timeParser, topDataParser, dataSetService, factory.create());
