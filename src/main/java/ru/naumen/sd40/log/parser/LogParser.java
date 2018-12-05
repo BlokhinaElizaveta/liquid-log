@@ -19,17 +19,8 @@ import java.text.ParseException;
 public class LogParser {
     private InfluxDAO storage;
 
-    @Qualifier("SdngDataParser")
     @Autowired
-    private DataParser sdngDataParser;
-
-    @Qualifier("GCDataParser")
-    @Autowired
-    private DataParser gcDataParser;
-
-    @Qualifier("TopDataParser")
-    @Autowired
-    private DataParser topDataParser;
+    private BeanFactory beanFactory;
 
     @Autowired
     public LogParser(InfluxDAO storage) {
@@ -43,31 +34,18 @@ public class LogParser {
     public void parse(String path, String mode, String db, String timeZone, boolean trace) throws IOException, ParseException {
         String influxDb = db.replaceAll("-", "_");
 
-        TimeParser timeParser;
+        TimeParser timeParser = beanFactory.getBean(mode + "TimeParser", TimeParser.class);
         LogLineParser logLineParser;
         DBWriter writer = new InfluxDBWriter(influxDb, storage, trace);
-        IDataSetService dataSetService;
 
-        switch (mode) {
-            case "sdng":
-                timeParser = new SdngTimeParser();
-                dataSetService = new DataSetService(writer, new SdngDataSetFactory());
-                logLineParser = new OneLineParser(timeParser, sdngDataParser, dataSetService) ;
-                break;
-            case "gc":
-                timeParser = new GCTimeParser();
-                dataSetService = new DataSetService(writer, new GCDataSetFactory());
-                logLineParser = new OneLineParser(timeParser, gcDataParser, dataSetService);
-                break;
-            case "top":
-                timeParser = new TopTimeParser(path);
-                DataSetFactory factory =  new TopDataSetFactory();
-                dataSetService = new DataSetService(writer, factory);
-                logLineParser = new BlockOfLinesParser(timeParser, topDataParser, dataSetService, factory.create());
-                break;
-            default:
-                throw new IllegalArgumentException(
-                        "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + mode);
+        DataParser dataParser = beanFactory.getBean(mode + "DataParser", DataParser.class);
+        DataSetFactory dataSetFactory =  beanFactory.getBean(mode + "DataSetFactory", DataSetFactory.class);
+        IDataSetService dataSetService = new DataSetService(writer, dataSetFactory);
+        logLineParser = new OneLineParser(timeParser, dataParser, dataSetService);
+
+        if (mode.equals("top")) {
+            ((TopTimeParser)timeParser).setDate(path);
+            logLineParser = new BlockOfLinesParser(timeParser, dataParser, dataSetService, dataSetFactory.create());
         }
 
         timeParser.configureTimeZone(timeZone);

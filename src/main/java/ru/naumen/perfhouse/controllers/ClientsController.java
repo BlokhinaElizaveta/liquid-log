@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import ru.naumen.perfhouse.influx.InfluxDAO;
+import ru.naumen.sd40.log.parser.LogModesService;
 
 /**
  * Created by dkirpichenkov on 26.10.16.
@@ -30,17 +31,21 @@ public class ClientsController
 {
     private Logger LOG = LoggerFactory.getLogger(ClientsController.class);
     private InfluxDAO influxDAO;
+    private LogModesService logModesService;
+
 
     @Inject
-    public ClientsController(InfluxDAO influxDAO)
+    public ClientsController(InfluxDAO influxDAO, LogModesService logModesService)
     {
         this.influxDAO = influxDAO;
+        this.logModesService = logModesService;
     }
 
     @RequestMapping(path = "/")
     public ModelAndView index()
     {
         List<String> clients = influxDAO.getDbList();
+        List<String> modes = logModesService.getModes();
         HashMap<String, Object> clientLast864Links = new HashMap<>();
         HashMap<String, Object> clientLinks = new HashMap<>();
         HashMap<String, Object> clientMonthLinks = new HashMap<>();
@@ -63,6 +68,7 @@ public class ClientsController
         });
 
         HashMap<String, Object> model = new HashMap<>();
+        model.put("modes", modes);
         model.put("clients", clients);
         model.put("links", clientLinks);
         model.put("monthlinks", clientMonthLinks);

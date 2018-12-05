@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
  * Created by doki on 22.10.16.
  */
 
+@Component("sdngTimeParser")
 public class SdngTimeParser implements TimeParser
 {
     private static final Pattern TIME_PATTERN = Pattern
