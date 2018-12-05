@@ -34,7 +34,8 @@ public class LogParser {
     public void parse(String path, String mode, String db, String timeZone, boolean trace) throws IOException, ParseException {
         String influxDb = db.replaceAll("-", "_");
 
-        TimeParser timeParser = beanFactory.getBean(mode + "TimeParser", TimeParser.class);
+        TimeParserFactory timeParserFactory = beanFactory.getBean(mode + "TimeParserFactory", TimeParserFactory.class);
+        TimeParser timeParser = timeParserFactory.get();
         LogLineParser logLineParser;
         DBWriter writer = new InfluxDBWriter(influxDb, storage, trace);
         DataParser dataParser = beanFactory.getBean(mode + "DataParser", DataParser.class);
