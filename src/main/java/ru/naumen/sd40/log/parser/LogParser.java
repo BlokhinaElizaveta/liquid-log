@@ -37,7 +37,6 @@ public class LogParser {
         TimeParser timeParser = beanFactory.getBean(mode + "TimeParser", TimeParser.class);
         LogLineParser logLineParser;
         DBWriter writer = new InfluxDBWriter(influxDb, storage, trace);
-
         DataParser dataParser = beanFactory.getBean(mode + "DataParser", DataParser.class);
         DataSetFactory dataSetFactory =  beanFactory.getBean(mode + "DataSetFactory", DataSetFactory.class);
         IDataSetService dataSetService = new DataSetService(writer, dataSetFactory);
@@ -49,6 +48,7 @@ public class LogParser {
         }
 
         timeParser.configureTimeZone(timeZone);
+        timeParser.prepareFileName(path);
 
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line;

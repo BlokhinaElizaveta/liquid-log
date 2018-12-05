@@ -19,12 +19,10 @@ public class TopTimeParser implements TimeParser {
         sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
-    public void setDate(String file) throws IllegalArgumentException
-    {
+    public void setDate(String file) throws IllegalArgumentException {
         //Supports these masks in file name: YYYYmmdd, YYY-mm-dd i.e. 20161101, 2016-11-01
         Matcher matcher = Pattern.compile("\\d{8}|\\d{4}-\\d{2}-\\d{2}").matcher(file);
-        if (!matcher.find())
-        {
+        if (!matcher.find()) {
             throw new IllegalArgumentException();
         }
         this.dataDate = matcher.group(0).replaceAll("-", "");
@@ -43,5 +41,16 @@ public class TopTimeParser implements TimeParser {
            return sdf.parse(dataDate + matcher.group(1)).getTime();
         }
         return 0L;
+    }
+
+    @Override
+    public void prepareFileName(String fileName) throws IllegalArgumentException {
+        //Supports these masks in file name: YYYYmmdd, YYY-mm-dd i.e. 20161101, 2016-11-01
+        Matcher matcher = Pattern.compile("\\d{8}|\\d{4}-\\d{2}-\\d{2}").matcher(fileName);
+        if (!matcher.find())
+        {
+            throw new IllegalArgumentException();
+        }
+        this.dataDate = matcher.group(0).replaceAll("-", "");
     }
 }
