@@ -46,9 +46,10 @@
         <label>Database name <input name="db" type="text" required></label>
         <label>Parsing mode
             <select name="mode">
-                <option value="sdng">sdng</option>
-                <option value="gc">gc</option>
-                <option value="top">top</option>
+        <% for (String parseMode :(List<String>)request.getAttribute("modes"))
+        { %>
+        <option value="<%= parseMode %>"><%=parseMode%></option>
+        <% } %>
             </select>
         </label>
         <label>Path to log file <input name="path" type="text" required></label>

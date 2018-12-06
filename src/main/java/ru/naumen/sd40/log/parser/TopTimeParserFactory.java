@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
-@Component("TopTimeParserFactory")
+@Component("topTimeParserFactory")
 @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class TopTimeParserFactory implements TimeParserFactory {
     private TimeParser topTimeParser;

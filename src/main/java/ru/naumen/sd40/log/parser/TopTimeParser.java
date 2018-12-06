@@ -1,5 +1,7 @@
 package ru.naumen.sd40.log.parser;
 
+import org.springframework.stereotype.Component;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
@@ -14,6 +16,15 @@ public class TopTimeParser implements TimeParser {
     public TopTimeParser()
     {
         sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+    }
+
+    public void setDate(String file) throws IllegalArgumentException {
+        //Supports these masks in file name: YYYYmmdd, YYY-mm-dd i.e. 20161101, 2016-11-01
+        Matcher matcher = Pattern.compile("\\d{8}|\\d{4}-\\d{2}-\\d{2}").matcher(file);
+        if (!matcher.find()) {
+            throw new IllegalArgumentException();
+        }
+        this.dataDate = matcher.group(0).replaceAll("-", "");
     }
 
     @Override

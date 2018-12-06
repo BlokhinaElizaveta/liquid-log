@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Component("GCDataParser")
+@Component("gcDataParser")
 public class GCDataParser implements DataParser<GCDataSet>
 {
     private Pattern gcExecutionTime = Pattern.compile(".*real=(.*)secs.*");

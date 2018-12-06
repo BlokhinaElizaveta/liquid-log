@@ -1,7 +1,6 @@
 package ru.naumen.sd40.log.parser;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.naumen.perfhouse.influx.InfluxDAO;
 
@@ -9,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Map;
 
 /**
  * Created by doki on 22.10.16.
@@ -17,34 +17,13 @@ import java.text.ParseException;
 @Component("logParser")
 public class LogParser {
     private InfluxDAO storage;
+    private Map<String, ParserService> parserServices;
 
-    @Qualifier("SdngDataParser")
-    @Autowired
-    private DataParser sdngDataParser;
-
-    @Qualifier("GCDataParser")
-    @Autowired
-    private DataParser gcDataParser;
-
-    @Qualifier("TopDataParser")
-    @Autowired
-    private DataParser topDataParser;
 
     @Autowired
-    @Qualifier("SdngTimeParserFactory")
-    private TimeParserFactory sdngTimeParserFactory;
-
-    @Autowired
-    @Qualifier("GCTimeParserFactory")
-    private TimeParserFactory gcTimeParserFactory;
-
-    @Autowired
-    @Qualifier("TopTimeParserFactory")
-    private TimeParserFactory topTimeParserFactory;
-
-    @Autowired
-    public LogParser(InfluxDAO storage) {
+    public LogParser(InfluxDAO storage, Map<String, ParserService> parserServices) {
         this.storage = storage;
+        this.parserServices = parserServices;
     }
 
     /**
@@ -53,32 +32,19 @@ public class LogParser {
      */
     public void parse(String path, String mode, String db, String timeZone, boolean trace) throws IOException, ParseException {
         String influxDb = db.replaceAll("-", "_");
-
-        TimeParser timeParser;
+        ParserService parserService = parserServices.get(mode);
+        TimeParserFactory timeParserFactory = parserService.getTimeParserFactory();
+        TimeParser timeParser = timeParserFactory.get();
         LogLineParser logLineParser;
         DBWriter writer = new InfluxDBWriter(influxDb, storage, trace);
-        IDataSetService dataSetService;
+        DataParser dataParser = parserService.getDataParser();
+        DataSetFactory dataSetFactory = parserService.getDataSetFactory();
+        IDataSetService dataSetService = new DataSetService(writer, dataSetFactory);
+        logLineParser = new OneLineParser(timeParser, dataParser, dataSetService);
 
-        switch (mode) {
-            case "sdng":
-                timeParser = sdngTimeParserFactory.get();
-                dataSetService = new DataSetService(writer, new SdngDataSetFactory());
-                logLineParser = new OneLineParser(timeParser, sdngDataParser, dataSetService) ;
-                break;
-            case "gc":
-                timeParser = gcTimeParserFactory.get();
-                dataSetService = new DataSetService(writer, new GCDataSetFactory());
-                logLineParser = new OneLineParser(timeParser, gcDataParser, dataSetService);
-                break;
-            case "top":
-                timeParser = topTimeParserFactory.get();
-                DataSetFactory factory = new TopDataSetFactory();
-                dataSetService = new DataSetService(writer, factory);
-                logLineParser = new BlockOfLinesParser(timeParser, topDataParser, dataSetService, factory.create());
-                break;
-            default:
-                throw new IllegalArgumentException(
-                        "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + mode);
+        if (mode.equals("top")) {
+            ((TopTimeParser)timeParser).setDate(path);
+            logLineParser = new BlockOfLinesParser(timeParser, dataParser, dataSetService, dataSetFactory.create());
         }
 
         timeParser.configureTimeZone(timeZone);

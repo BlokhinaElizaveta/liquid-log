@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Component("TopDataParser")
+@Component("topDataParser")
 public class TopDataParser implements DataParser<TopDataSet> {
 
     private Pattern cpuAndMemPattren = Pattern

@@ -3,7 +3,7 @@ package ru.naumen.sd40.log.parser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("SdngDataParser")
+@Component("sdngDataParser")
 public class SdngDataParser implements DataParser<SdngDataSet> {
 
     private ErrorParser errorsParser;
