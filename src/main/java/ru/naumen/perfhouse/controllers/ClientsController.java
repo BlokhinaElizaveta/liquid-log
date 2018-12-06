@@ -1,8 +1,10 @@
 package ru.naumen.perfhouse.controllers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import ru.naumen.perfhouse.influx.InfluxDAO;
-import ru.naumen.sd40.log.parser.LogModesService;
+import ru.naumen.sd40.log.parser.ParserService;
 
 /**
  * Created by dkirpichenkov on 26.10.16.
@@ -31,21 +33,21 @@ public class ClientsController
 {
     private Logger LOG = LoggerFactory.getLogger(ClientsController.class);
     private InfluxDAO influxDAO;
-    private LogModesService logModesService;
+    private Map<String, ParserService> parserServices;
 
 
     @Inject
-    public ClientsController(InfluxDAO influxDAO, LogModesService logModesService)
+    public ClientsController(InfluxDAO influxDAO, Map<String, ParserService> parserServices)
     {
         this.influxDAO = influxDAO;
-        this.logModesService = logModesService;
+        this.parserServices = parserServices;
     }
 
     @RequestMapping(path = "/")
     public ModelAndView index()
     {
         List<String> clients = influxDAO.getDbList();
-        List<String> modes = logModesService.getModes();
+        List<String> modes = new ArrayList<>(parserServices.keySet());
         HashMap<String, Object> clientLast864Links = new HashMap<>();
         HashMap<String, Object> clientLinks = new HashMap<>();
         HashMap<String, Object> clientMonthLinks = new HashMap<>();

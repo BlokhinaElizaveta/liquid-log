@@ -8,7 +8,6 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Component("topTimeParser")
 public class TopTimeParser implements TimeParser {
     private Pattern timeRegex = Pattern.compile("^_+ (\\S+)");
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm");
