@@ -15,7 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import ru.naumen.perfhouse.statdata.StatData;
 import ru.naumen.perfhouse.statdata.StatDataService;
-import ru.naumen.sd40.log.parser.DataType;
+import ru.naumen.sd40.log.parser.DataTypes.DataType;
 
 /**
  * Created by doki on 23.10.16.

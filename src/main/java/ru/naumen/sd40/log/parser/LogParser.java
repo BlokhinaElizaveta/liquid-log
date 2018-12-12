@@ -3,6 +3,15 @@ package ru.naumen.sd40.log.parser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.naumen.perfhouse.influx.InfluxDAO;
+import ru.naumen.sd40.log.parser.DataSetFactories.DataSetFactory;
+import ru.naumen.sd40.log.parser.LogLineParsers.BlockOfLinesParser;
+import ru.naumen.sd40.log.parser.LogLineParsers.LogLineParser;
+import ru.naumen.sd40.log.parser.LogLineParsers.OneLineParser;
+import ru.naumen.sd40.log.parser.ParserServices.ParserService;
+import ru.naumen.sd40.log.parser.DataParsers.DataParser;
+import ru.naumen.sd40.log.parser.TimeParserFactories.TimeParserFactory;
+import ru.naumen.sd40.log.parser.TimeParsers.TimeParser;
+import ru.naumen.sd40.log.parser.TimeParsers.TopTimeParser;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

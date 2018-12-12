@@ -2,6 +2,10 @@ package ru.naumen.sd40.log.parser;
 
 import org.influxdb.dto.BatchPoints;
 import ru.naumen.perfhouse.influx.InfluxDAO;
+import ru.naumen.sd40.log.parser.Data.ActionDoneData;
+import ru.naumen.sd40.log.parser.Data.ErrorData;
+import ru.naumen.sd40.log.parser.DataSets.DataSet;
+import ru.naumen.sd40.log.parser.DataSets.SdngDataSet;
 
 public class InfluxDBWriter implements DBWriter {
 
