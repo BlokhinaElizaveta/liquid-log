@@ -1,4 +1,5 @@
 <%@page import="ru.naumen.perfhouse.statdata.Constants"%>
+<%@page import="ru.naumen.sd40.log.parser.TopDataType"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.List" %>
@@ -33,13 +34,13 @@
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <%
     Number times[] = (Number[])request.getAttribute(Constants.TIME);
-    Number avgLa[]=  (Number[])request.getAttribute(Constants.Top.AVG_LA);
-    Number avgCpu[]=  (Number[])request.getAttribute(Constants.Top.AVG_CPU);
-    Number avgMem[]=  (Number[])request.getAttribute(Constants.Top.AVG_MEM);
-    Number maxLa[]=  (Number[])request.getAttribute(Constants.Top.MAX_LA);
-    Number maxCpu[]=  (Number[])request.getAttribute(Constants.Top.MAX_CPU);
-    Number maxMem[]=  (Number[])request.getAttribute(Constants.Top.MAX_MEM);
-    
+    Number avgLa[]=  (Number[])request.getAttribute(TopDataType.AVG_LA);
+    Number avgCpu[]=  (Number[])request.getAttribute(TopDataType.AVG_CPU);
+    Number avgMem[]=  (Number[])request.getAttribute(TopDataType.AVG_MEM);
+    Number maxLa[]=  (Number[])request.getAttribute(TopDataType.MAX_LA);
+    Number maxCpu[]=  (Number[])request.getAttribute(TopDataType.MAX_CPU);
+    Number maxMem[]=  (Number[])request.getAttribute(TopDataType.MAX_MEM);
+
   //Prepare links
   	String path="";
   	String custom = "";
@@ -47,9 +48,9 @@
   	Object year = request.getAttribute("year");
   	Object month = request.getAttribute("month");
   	Object day = request.getAttribute("day");
-      
+
       String countParam = (String)request.getParameter("count");
-      
+
   	String params = "";
   	String datePath = "";
 
@@ -72,11 +73,11 @@
   	    Object from = request.getAttribute("from");
   	  	Object to = request.getAttribute("to");
   	  	Object maxResults = request.getAttribute("maxResults");
-  	  	
+
   	  	StringBuilder sb = new StringBuilder();
   	  	path = sb.append("?from=").append(from).append("&to=").append(to).append("&maxResults=").append(maxResults).toString();
   	}
-      
+
 %>
 
 <div class="container">
@@ -88,10 +89,17 @@
         Feel free to hide/show specific data by clicking on chart's legend
     </p>
     <ul class="nav nav-pills">
-		<li class="nav-item"><a class="btn btn-outline-primary" href="/history/${client}<%=custom %><%=path %>">Responses</a></li>
-		<li class="nav-item"><a class="btn btn-outline-primary" href="/history/${client}<%=custom %>/actions<%=path %>">Performed actions</a></li>
-		<li class="nav-item"><a class="btn btn-outline-primary" href="/history/${client}<%=custom %>/gc<%=path %>">Garbage Collection</a></li>
-		<li class="nav-item"><a class="nav-link active" >Top data</a></li>
+        <% for (String dataType :(List<String>)request.getAttribute("dataTypes"))
+        {
+           if(dataType.equals("top"))  { %>
+             <li class="nav-item"><a class="nav-link active"><%=dataType%></a></li>
+           <% } else { %>
+            <li class="nav-item">
+               <a class="btn btn-outline-primary" href="/history/${client}<%=custom %>/<%=dataType%><%=path%>"><%=dataType%></a>
+            </li>
+            <%
+            }
+        } %>
 	</ul>
 </div>
 

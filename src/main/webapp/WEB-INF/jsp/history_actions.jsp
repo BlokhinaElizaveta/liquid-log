@@ -1,5 +1,5 @@
-<%@page import="ru.naumen.perfhouse.statdata.DataType"%>
 <%@page import="ru.naumen.perfhouse.statdata.Constants"%>
+<%@page import="ru.naumen.sd40.log.parser.ActionsDataType"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.List" %>
@@ -25,17 +25,17 @@
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <%
     Number times[] = (Number[])request.getAttribute(Constants.TIME);
-    Number add[]=  (Number[])request.getAttribute(Constants.PerformedActions.ADD_ACTIONS);
-    Number edit[] = (Number[])request.getAttribute(Constants.PerformedActions.EDIT_ACTIONS);
-    Number list[] = (Number[])request.getAttribute(Constants.PerformedActions.LIST_ACTIONS);
-    Number comment[] = (Number[])request.getAttribute(Constants.PerformedActions.COMMENT_ACTIONS);
-    Number form[] = (Number[])request.getAttribute(Constants.PerformedActions.GET_FORM_ACTIONS);
-    Number dtos[] = (Number[])request.getAttribute(Constants.PerformedActions.GET_DT_OBJECT_ACTIONS);
-    Number search[] = (Number[])request.getAttribute(Constants.PerformedActions.SEARCH_ACTIONS);
-    Number actionsSumm[] = (Number[])request.getAttribute(Constants.PerformedActions.ACTIONS_COUNT);
-    Number getCatalogs[] = (Number[])request.getAttribute(Constants.PerformedActions.GET_CATALOGS_ACTIONS);
-    
-    
+    Number add[]=  (Number[])request.getAttribute(ActionsDataType.ADD_ACTIONS);
+    Number edit[] = (Number[])request.getAttribute(ActionsDataType.EDIT_ACTIONS);
+    Number list[] = (Number[])request.getAttribute(ActionsDataType.LIST_ACTIONS);
+    Number comment[] = (Number[])request.getAttribute(ActionsDataType.COMMENT_ACTIONS);
+    Number form[] = (Number[])request.getAttribute(ActionsDataType.GET_FORM_ACTIONS);
+    Number dtos[] = (Number[])request.getAttribute(ActionsDataType.GET_DT_OBJECT_ACTIONS);
+    Number search[] = (Number[])request.getAttribute(ActionsDataType.SEARCH_ACTIONS);
+    Number actionsSumm[] = (Number[])request.getAttribute(ActionsDataType.ACTIONS_COUNT);
+    Number getCatalogs[] = (Number[])request.getAttribute(ActionsDataType.GET_CATALOGS_ACTIONS);
+
+
   //Prepare links
   	String path="";
   	String custom = "";
@@ -43,9 +43,9 @@
   	Object year = request.getAttribute("year");
   	Object month = request.getAttribute("month");
   	Object day = request.getAttribute("day");
-      
+
       String countParam = (String)request.getParameter("count");
-      
+
   	String params = "";
   	String datePath = "";
 
@@ -68,11 +68,11 @@
   	    Object from = request.getAttribute("from");
   	  	Object to = request.getAttribute("to");
   	  	Object maxResults = request.getAttribute("maxResults");
-  	  	
+
   	  	StringBuilder sb = new StringBuilder();
   	  	path = sb.append("?from=").append(from).append("&to=").append(to).append("&maxResults=").append(maxResults).toString();
   	}
-      
+
 %>
 
 <div class="container">
@@ -84,11 +84,18 @@
         Feel free to hide/show specific data by clicking on chart's legend
     </p>
     <ul class="nav nav-pills">
-		<li class="nav-item"><a class="btn btn-outline-primary" href="/history/${client}<%=custom %><%=path%>">Responses</a></li>
-		<li class="nav-item"><a class="nav-link active">Performed actions</a></li>
-		<li class="nav-item"><a class="btn btn-outline-primary" href="/history/${client}<%=custom %>/gc<%=path%>">Garbage Collection</a></li>
-		<li class="nav-item"><a class="btn btn-outline-primary" href="/history/${client}<%=custom %>/top<%=path%>">Top data</a></li>
-	</ul>
+        <% for (String dataType :(List<String>)request.getAttribute("dataTypes"))
+        {
+           if(dataType.equals("actions"))  { %>
+             <li class="nav-item"><a class="nav-link active"><%=dataType%></a></li>
+           <% } else { %>
+            <li class="nav-item">
+               <a class="btn btn-outline-primary" href="/history/${client}<%=custom %>/<%=dataType%><%=path%>"><%=dataType%></a>
+            </li>
+            <%
+            }
+        } %>
+    </ul>
 </div>
 
 <!-- Gc chart -->

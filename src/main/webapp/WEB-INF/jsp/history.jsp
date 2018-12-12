@@ -4,7 +4,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="org.influxdb.dto.QueryResult.Series" %>
-<%@ page import="ru.naumen.perfhouse.statdata.Constants.ResponseTimes" %>
+<%@ page import="ru.naumen.sd40.log.parser.ResponseDataType" %>
 
 <html>
 
@@ -24,17 +24,17 @@
 
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <%
-    Number p50[] = (Number[])request.getAttribute(Constants.ResponseTimes.PERCENTILE50);
-    Number p95[] = (Number[])request.getAttribute(Constants.ResponseTimes.PERCENTILE95);
-    Number p99[] = (Number[])request.getAttribute(Constants.ResponseTimes.PERCENTILE99);
-    Number p999[] = (Number[])request.getAttribute(Constants.ResponseTimes.PERCENTILE999);
-    Number p100[] = (Number[])request.getAttribute(Constants.ResponseTimes.MAX);
-    Number count[]= (Number[])request.getAttribute(Constants.ResponseTimes.COUNT);
-    Number errors[]= (Number[])request.getAttribute(Constants.ResponseTimes.ERRORS);
-    Number mean[]= (Number[])request.getAttribute(Constants.ResponseTimes.MEAN);
-    Number stddev[]= (Number[])request.getAttribute(Constants.ResponseTimes.STDDEV);
+    Number p50[] = (Number[])request.getAttribute(ResponseDataType.PERCENTILE50);
+    Number p95[] = (Number[])request.getAttribute(ResponseDataType.PERCENTILE95);
+    Number p99[] = (Number[])request.getAttribute(ResponseDataType.PERCENTILE99);
+    Number p999[] = (Number[])request.getAttribute(ResponseDataType.PERCENTILE999);
+    Number p100[] = (Number[])request.getAttribute(ResponseDataType.MAX);
+    Number count[]= (Number[])request.getAttribute(ResponseDataType.COUNT);
+    Number errors[]= (Number[])request.getAttribute(ResponseDataType.ERRORS);
+    Number mean[]= (Number[])request.getAttribute(ResponseDataType.MEAN);
+    Number stddev[]= (Number[])request.getAttribute(ResponseDataType.STDDEV);
     Number times[] = (Number[])request.getAttribute(Constants.TIME);
-    
+
   //Prepare links
   	String path="";
   	String custom = "";
@@ -42,15 +42,15 @@
     	Object year = request.getAttribute("year");
     	Object month = request.getAttribute("month");
     	Object day = request.getAttribute("day");
-	    
+
 	    String countParam = (String)request.getParameter("count");
-	    
+
     	String params = "";
     	String datePath = "";
-    
+
     	StringBuilder sb = new StringBuilder();
-    
-    
+
+
     	if(countParam != null){
         	params = sb.append("?count=").append(countParam).toString();
     	}else{
@@ -67,7 +67,7 @@
   	    Object from = request.getAttribute("from");
   	  	Object to = request.getAttribute("to");
   	  	Object maxResults = request.getAttribute("maxResults");
-  	  	
+
   	  	StringBuilder sb = new StringBuilder();
   	  	path = sb.append("?from=").append(from).append("&to=").append(to).append("&maxResults=").append(maxResults).toString();
   	}
@@ -82,11 +82,18 @@
         Feel free to hide/show specific percentile by clicking on chart's legend
     </p>
     <ul class="nav nav-pills">
-		<li class="nav-item"><a class="nav-link active">Responses</a></li>
-		<li class="nav-item"><a class="btn btn-outline-primary" href="/history/${client}<%=custom %>/actions<%=path%>">Performed actions</a></li>
-		<li class="nav-item"><a class="btn btn-outline-primary" href="/history/${client}<%=custom %>/gc<%=path%>">Garbage Collection</a></li>
-		<li class="nav-item"><a class="btn btn-outline-primary" href="/history/${client}<%=custom %>/top<%=path%>">Top data</a></li>
-	</ul>
+        <% for (String dataType :(List<String>)request.getAttribute("dataTypes"))
+        {
+           if(dataType.equals("response"))  { %>
+             <li class="nav-item"><a class="nav-link active"><%=dataType%></a></li>
+           <% } else { %>
+            <li class="nav-item">
+               <a class="btn btn-outline-primary" href="/history/${client}<%=custom %>/<%=dataType%><%=path%>"><%=dataType%></a>
+            </li>
+            <%
+            }
+        } %>
+    </ul>
 </div>
 
 <div class="container" id="response-chart-container" style="height:600px;">

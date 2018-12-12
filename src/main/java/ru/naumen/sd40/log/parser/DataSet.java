@@ -1,5 +1,8 @@
 package ru.naumen.sd40.log.parser;
 
-public interface DataSet {
+import java.util.Map;
 
+public interface DataSet {
+    Map<String, Object> getFields();
+    boolean isNan();
 }

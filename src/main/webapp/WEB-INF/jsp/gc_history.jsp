@@ -1,4 +1,5 @@
 <%@page import="ru.naumen.perfhouse.statdata.Constants"%>
+<%@page import="ru.naumen.sd40.log.parser.GCDataType"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.List" %>
@@ -24,10 +25,10 @@
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <%
     Number times[] = (Number[])request.getAttribute(Constants.TIME);
-    Number gcTimes[]=  (Number[])request.getAttribute(Constants.GarbageCollection.GCTIMES);
-    Number gcAvg[] = (Number[])request.getAttribute(Constants.GarbageCollection.AVARAGE_GC_TIME);
-    Number gcMax[] = (Number[])request.getAttribute(Constants.GarbageCollection.MAX_GC_TIME);
-    
+    Number gcTimes[]=  (Number[])request.getAttribute(GCDataType.GCTIMES);
+    Number gcAvg[] = (Number[])request.getAttribute(GCDataType.AVARAGE_GC_TIME);
+    Number gcMax[] = (Number[])request.getAttribute(GCDataType.MAX_GC_TIME);
+
   //Prepare links
   	String path="";
   	String custom = "";
@@ -35,9 +36,9 @@
   	Object year = request.getAttribute("year");
   	Object month = request.getAttribute("month");
   	Object day = request.getAttribute("day");
-      
+
       String countParam = (String)request.getParameter("count");
-      
+
   	String params = "";
   	String datePath = "";
 
@@ -60,12 +61,12 @@
   	    Object from = request.getAttribute("from");
   	  	Object to = request.getAttribute("to");
   	  	Object maxResults = request.getAttribute("maxResults");
-  	  	
+
   	  	StringBuilder sb = new StringBuilder();
   	  	path = sb.append("?from=").append(from).append("&to=").append(to).append("&maxResults=").append(maxResults).toString();
   	}
-      
-    
+
+
 %>
 
 <div class="container">
@@ -77,10 +78,17 @@
         Feel free to hide/show specific data by clicking on chart's legend
     </p>
     <ul class="nav nav-pills">
-		<li class="nav-item"><a class="btn btn-outline-primary" href="/history/${client}<%=custom %><%=path%>">Responses</a></li>
-		<li class="nav-item"><a class="btn btn-outline-primary" href="/history/${client}<%=custom %>/actions<%=path%>">Performed actions</a></li>
-		<li class="nav-item"><a class="nav-link active">Garbage Collection</a></li>
-		<li class="nav-item"><a class="btn btn-outline-primary" href="/history/${client}<%=custom %>/top<%=path%>">Top data</a></li>
+        <% for (String dataType :(List<String>)request.getAttribute("dataTypes"))
+        {
+           if(dataType.equals("gc"))  { %>
+             <li class="nav-item"><a class="nav-link active"><%=dataType%></a></li>
+           <% } else { %>
+            <li class="nav-item">
+               <a class="btn btn-outline-primary" href="/history/${client}<%=custom %>/<%=dataType%><%=path%>"><%=dataType%></a>
+            </li>
+            <%
+            }
+        } %>
 	</ul>
 </div>
 
