@@ -1,7 +1,7 @@
 package ru.naumen.sd40.log.parser;
 
-import ru.naumen.sd40.log.parser.DataSetFactories.DataSetFactory;
-import ru.naumen.sd40.log.parser.DataSets.DataSet;
+import ru.naumen.sd40.log.parser.datasetfactories.DataSetFactory;
+import ru.naumen.sd40.log.parser.datasets.DataSet;
 
 public class DataSetService implements IDataSetService {
 

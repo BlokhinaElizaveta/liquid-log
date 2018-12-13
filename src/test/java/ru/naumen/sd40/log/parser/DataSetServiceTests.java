@@ -3,9 +3,9 @@ package ru.naumen.sd40.log.parser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import ru.naumen.sd40.log.parser.DataSetFactories.DataSetFactory;
-import ru.naumen.sd40.log.parser.DataSetFactories.SdngDataSetFactory;
-import ru.naumen.sd40.log.parser.DataSets.DataSet;
+import ru.naumen.sd40.log.parser.datasetfactories.DataSetFactory;
+import ru.naumen.sd40.log.parser.datasetfactories.SdngDataSetFactory;
+import ru.naumen.sd40.log.parser.datasets.DataSet;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;

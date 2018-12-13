@@ -4,7 +4,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="org.influxdb.dto.QueryResult.Series" %>
-<%@ page import="ru.naumen.sd40.log.parser.DataTypes.ResponseDataType" %>
+<%@ page import="ru.naumen.sd40.log.parser.datatypes.ResponseDataType" %>
 
 <html>
 
