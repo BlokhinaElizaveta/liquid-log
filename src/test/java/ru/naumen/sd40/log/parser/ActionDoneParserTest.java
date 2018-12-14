@@ -3,6 +3,8 @@ package ru.naumen.sd40.log.parser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import ru.naumen.sd40.log.parser.dataparsers.ActionDoneParser;
+import ru.naumen.sd40.log.parser.datasets.SdngDataSet;
 
 public class ActionDoneParserTest {
 
