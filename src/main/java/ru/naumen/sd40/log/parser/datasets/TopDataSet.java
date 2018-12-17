@@ -31,4 +31,9 @@ public class TopDataSet implements DataSet {
     public boolean isNan() {
         return topData.isNan();
     }
+
+    @Override
+    public void printStatistic(long key) {
+
+    }
 }

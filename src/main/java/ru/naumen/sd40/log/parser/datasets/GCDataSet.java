@@ -29,4 +29,9 @@ public class GCDataSet implements DataSet {
         return gcData.isNan();
     }
 
+    @Override
+    public void printStatistic(long key) {
+
+    }
+
 }

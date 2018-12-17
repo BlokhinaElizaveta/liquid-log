@@ -5,4 +5,5 @@ import java.util.Map;
 public interface DataSet {
     Map<String, Object> getFields();
     boolean isNan();
+    void printStatistic(long key);
 }

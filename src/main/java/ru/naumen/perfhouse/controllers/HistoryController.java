@@ -29,6 +29,8 @@ public class HistoryController {
     Map<String, DataType> dataTypes;
 
     private static final String NO_HISTORY_VIEW = "no_history";
+    private static final String DATA_TYPES_VIEW = "data_types";
+
 
     @Autowired
     public HistoryController(Map<String, DataType> dataTypes)
@@ -43,9 +45,8 @@ public class HistoryController {
     public ModelAndView defaultIndexByDay(@PathVariable("client") String client,
                                           @PathVariable(name = "year", required = false) int year,
                                           @PathVariable(name = "month", required = false) int month,
-                                          @PathVariable(name = "day", required = false) int day) throws ParseException {
-        DataType dataType = dataTypes.get("response");
-        return getDataAndViewByDate(client, dataType, year, month, day, dataType.getViewName());
+                                          @PathVariable(name = "day", required = false) int day) {
+        return getDataAndViewByDateDataTypes(client, year, month, day);
     }
 
     @RequestMapping(path = "/history/{client}/{typeName}/{year}/{month}/{day}")
@@ -64,8 +65,8 @@ public class HistoryController {
             @PathVariable("client") String client,
             @PathVariable(name = "year", required = false) int year,
             @PathVariable(name = "month", required = false) int month) throws ParseException {
-        DataType dataType = dataTypes.get("response");
-        return getDataAndViewByDate(client, dataType, year, month, 0, dataType.getViewName(), true);
+
+        return getDataAndViewByDateDataTypes(client, year, month, 0);
     }
 
     @RequestMapping(path = "/history/{client}/{typeName}/{year}/{month}")
@@ -81,8 +82,7 @@ public class HistoryController {
     @RequestMapping(path = "/history/{client}/custom")
     public ModelAndView defaultCustomIndex(@PathVariable("client") String client, @RequestParam("from") String from,
                                            @RequestParam("to") String to, @RequestParam("maxResults") int maxResults) throws ParseException {
-        DataType dataType = dataTypes.get("response");
-        return getDataAndViewCustom(client, dataType, from, to, maxResults, dataType.getViewName());
+        return getDataAndViewCustomDataTypes(client, from, to, maxResults);
     }
 
     @RequestMapping(path = "/history/{client}/custom/{typeName}")
@@ -93,22 +93,14 @@ public class HistoryController {
         return getDataAndViewCustom(client, dataType, from, to, count, dataType.getViewName());
     }
 
-
     @RequestMapping(path = "/history/{client}")
     public ModelAndView defaultIndexLast864(@PathVariable("client") String client,
-                                            @RequestParam(name = "count", defaultValue = "864") int count) throws ParseException {
-        DataType dataType = dataTypes.get("response");
-        ru.naumen.perfhouse.statdata.StatData d = service.getData(client, dataType, count);
-
-        if (d == null) {
-            return new ModelAndView(NO_HISTORY_VIEW);
-        }
-
-        Map<String, Object> model = new HashMap<>(d.asModel());
+                                            @RequestParam(name = "count", defaultValue = "864") int count){
+        Map<String, Object> model = new HashMap<>();
         model.put("client", client);
         model.put("dataTypes", new ArrayList<>(dataTypes.keySet()));
 
-        return new ModelAndView("history", model, HttpStatus.OK);
+        return new ModelAndView(DATA_TYPES_VIEW, model, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/history/{client}/{typeName}")
@@ -169,5 +161,26 @@ public class HistoryController {
         model.put("maxResults", maxResults);
         model.put("dataTypes", new ArrayList<>(dataTypes.keySet()));
         return new ModelAndView(viewName, model, HttpStatus.OK);
+    }
+
+    private ModelAndView getDataAndViewCustomDataTypes(String client, String from, String to, int maxResults) {
+        Map<String, Object> model = new HashMap<>();
+        model.put("client", client);
+        model.put("custom", true);
+        model.put("from", from);
+        model.put("to", to);
+        model.put("maxResults", maxResults);
+        model.put("dataTypes", new ArrayList<>(dataTypes.keySet()));
+        return new ModelAndView(DATA_TYPES_VIEW, model, HttpStatus.OK);
+    }
+
+    private ModelAndView getDataAndViewByDateDataTypes(String client, int year, int month, int day) {
+        Map<String, Object> model = new HashMap<>();
+        model.put("client", client);
+        model.put("year", year);
+        model.put("month", month);
+        model.put("day", day);
+        model.put("dataTypes", new ArrayList<>(dataTypes.keySet()));
+        return new ModelAndView(DATA_TYPES_VIEW, model, HttpStatus.OK);
     }
 }
