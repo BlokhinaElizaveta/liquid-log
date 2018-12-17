@@ -50,4 +50,12 @@ public class SdngDataSet implements DataSet {
     public boolean isNan() {
         return actionDoneData.isNan();
     }
+
+    @Override
+    public void printStatistic(long key) {
+        actionDoneData.calculate();
+        System.out.print(String.format("%d;%d;%f;%f;%f;%f;%f;%f;%f;%f;%d\n", key, actionDoneData.getCount(),
+                actionDoneData.getMin(), actionDoneData.getMean(), actionDoneData.getStddev(), actionDoneData.getPercent50(), actionDoneData.getPercent95(),
+                actionDoneData.getPercent99(), actionDoneData.getPercent999(), actionDoneData.getMax(), errorData.getErrorCount()));
+    }
 }
